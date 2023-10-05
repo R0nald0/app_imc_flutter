@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:imc_app/data/service/impl/service_db_hive_impl.dart';
 import 'package:imc_app/pages/shared/widget/card_imc_component.dart';
 import 'package:imc_app/data/repository/imc_repository_impl.dart';
 
@@ -13,11 +14,16 @@ class ListImcState extends StatefulWidget {
 }
 
 class _ListImcStateState extends State<ListImcState> {
-  final imcRepository = ImcRepositoryImpl();
+  late ImcRepositoryImpl imcRepository ;
+  late ServiceDbHiveImpl service ;
   var listImc =const <Imc>[];
 
   
-  void getAll(){
+  void getAll() async{
+      service = await ServiceDbHiveImpl.initBox();
+      imcRepository = ImcRepositoryImpl(service);
+
+
       setState(() {
          listImc =imcRepository.getAll();
          print( " list ${listImc.length}");
@@ -57,7 +63,7 @@ class _ListImcStateState extends State<ListImcState> {
             
            return   Dismissible(
             onDismissed:(DismissDirection direction){
-               imcRepository.deleteImc(user);
+               imcRepository.deleteImc(index);
                getAll();
             } ,
             key:Key(user.name), 
@@ -77,8 +83,8 @@ class _ListImcStateState extends State<ListImcState> {
            showModalBottomSheet(
              isScrollControlled: true,
              useSafeArea: true,
-            context: context, 
-            builder: (bc){
+             context: context, 
+             builder: (bc){
              return  ImcHomePage(imcRepository: imcRepository,onUpdate: getAll,);
            });
            //

@@ -24,7 +24,7 @@ class _ImcHomePageState extends State<ImcHomePage> {
   
  void calcularImc(ImcRepository imcRepo){
        double? weight = double.tryParse(pesoController.text);
-        double? height = double.tryParse(alturaController.text) ;
+       double? height = double.tryParse(alturaController.text) ;
 
         if (weight !=null && height != null) {
           imc =  imcRepo.addImc(nameController.text, weight, height);  

@@ -1,37 +1,44 @@
+import 'package:imc_app/data/model/imc_dao.dart';
+import 'package:imc_app/data/service/abstract_service_db.dart';
 import 'package:imc_app/domain/enum/enum_peso.dart';
 import 'package:imc_app/domain/model/imc.dart';
 import 'package:imc_app/domain/repository/imc_repository.dart';
 import 'package:intl/intl.dart';
 
 class ImcRepositoryImpl extends ImcRepository {
-     final List<Imc> _usersImc = [];
-   
+     final AbstractServiceDb _serviceDb;
+ 
+   ImcRepositoryImpl(this._serviceDb);
+
   @override
   Imc addImc( String name ,double weight , double height) {
-     final imc = calculateImc(weight.roundToDouble(),height.roundToDouble());
+     final imc = calculateImc(weight,height);
      var status =getStatus(imc);
      var date = getDateNow();
-     final imcSaved =Imc(name,imc,status ,date );
-        
-      _usersImc.add(imcSaved);
-      
-     return  _usersImc.last;
+  
+       _serviceDb.save(
+        ImcDao(name, imc, status, date)
+       ) ;
+
+     return getAll().last;
   }
 
   @override
-  void deleteImc(Imc imc){
-          _usersImc.remove(imc);
+  void deleteImc(int index){
+         _serviceDb.delete(index);
   }
 
   @override
   List<Imc> getAll() {
-        return _usersImc;
+    return  _serviceDb.findAll().map(
+         (e) => Imc(e.name, e.imc, e.statusWeight, e.date)
+      ).cast<Imc>().toList();
   }
 
   @override
   String getDateNow(){
-    var date = DateTime.now();
-    var format = DateFormat("dd/MM/yyyy").format(date);
+     var date = DateTime.now();
+     var format = DateFormat("dd/MM/yyyy").format(date);
      return format;
   }
 
@@ -57,8 +64,7 @@ class ImcRepositoryImpl extends ImcRepository {
          }
           case >= 25.0 && <= 29.99:{
             return StatusPeso.ACIMA_DO_PESO;
-         }
-         
+         }   
           case >= 30.0 && <= 34.99:{
             return StatusPeso.OBESIDADE_I;
          }
@@ -68,7 +74,6 @@ class ImcRepositoryImpl extends ImcRepository {
         case >= 17.1  :{
             return StatusPeso.OBESIDADE_III;
          } 
-
           default: return StatusPeso.NORMAL;
      }
          

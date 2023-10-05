@@ -7,7 +7,7 @@ abstract class ImcRepository{
     List<Imc> getAll();
   
     Imc addImc(String name ,double weight , double height);
-    void deleteImc(Imc imc);
+    void deleteImc(int index);
     String getDateNow();
     double calculateImc(double weight , double height);
     StatusPeso getStatus(double imc);
