@@ -3,7 +3,7 @@
 ### Projeto/Aplicativo mobile para calcular Índice de massa corporal- IMC,feito em linguagem dart com framework flutter.
 #### Funcionalidades
 
-* listar historico de calculados IMC
+* listar histórico de calculados IMC
 
 * calcular Imc
 
